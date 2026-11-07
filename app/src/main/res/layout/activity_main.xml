@@ -31,6 +31,20 @@
             app:titleTextColor="#BCBCBC"
             />
 
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/barre_onglets"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#615F5F"
+            app:tabIndicatorColor="#FFFFFF"
+            app:tabSelectedTextColor="#FFFFFF"
+            app:tabTextColor="#A0A0A0"
+            app:layout_constraintTop_toBottomOf="@id/barre_outils"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
         <!-- Liste défilante : les lignes viennent de item_media.xml (via un adapter) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/liste_medias"
