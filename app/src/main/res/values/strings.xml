@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">NovaPlayer</string>
+    <string name="message_aucun_media"> Aucun media</string>
+    <string name="menu_tous_les_medias"> Tous les média disponible </string>
+    <string name="menu_a_propos"> Â propos  </string>
 </resources>
