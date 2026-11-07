@@ -3,4 +3,7 @@
     <string name="message_aucun_media"> Aucun media</string>
     <string name="menu_tous_les_medias"> Tous les média disponible </string>
     <string name="menu_a_propos"> Â propos  </string>
+    <string name="aucun_recent">Aucun média récent</string>
+    <string name="aucune_video">Aucune vidéo disponible</string>
+    <string name="aucun_audio">Aucun audio disponible</string>
 </resources>
