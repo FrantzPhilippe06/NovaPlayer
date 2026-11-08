@@ -3,10 +3,11 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding = "12dp">
+    android:padding = "12dp"
+    android:background="#B8B8B8">
 
     <ImageView
         android:id="@+id/image_media"
