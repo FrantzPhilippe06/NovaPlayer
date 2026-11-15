@@ -22,6 +22,28 @@
         android:layout_height="220dp"
         android:background="#000000" />
 
+    <TextView
+        android:id="@+id/titre_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="video.mp4"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/artiste_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Artiste inconnu"
+        android:textColor="#AAAAAA"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        android:layout_marginTop="4dp" />
+
+
     <SeekBar
         android:id="@+id/seekbar"
         android:layout_width="match_parent"
