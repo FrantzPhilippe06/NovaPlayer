@@ -1,9 +1,14 @@
 package com.example.novaplayer;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Arrays;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -12,8 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import com.google.android.material.*;
-import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -28,6 +32,27 @@ public class MainActivity extends AppCompatActivity {
         //recuperation des ids
         TextView textAucunMedia = findViewById(R.id.texte_aucun_media);
         RecyclerView listMedias = findViewById(R.id.liste_medias);
+
+
+        /**
+         * Liste temporaire de vidéos pour tester l'interface.
+         */
+        List<String> videos = Arrays.asList(
+                "Vacances.mp4",
+                "Présentation.mp4",
+                "Tutoriel.mp4"
+        );
+
+        // Création de l'adaptateur
+        MediaAdapter adaptateur = new MediaAdapter(videos);
+
+        // Organisation verticale de la liste
+        listMedias.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
+
+         // Association de l'adaptateur au RecyclerView
+        listMedias.setAdapter(adaptateur);
 
 
         // Ajoute les trois onglets à l'écran
@@ -49,15 +74,21 @@ public class MainActivity extends AppCompatActivity {
                     public void onTabSelected(TabLayout.Tab tab) {
                         int position = tab.getPosition();
 
-                        switch (position){
+                        switch (position) {
                             case 0:
-                                textAucunMedia.setText(R.string.aucun_recent);
+                                ;
+                                listMedias.setVisibility(View.GONE);
+                                textAucunMedia.setVisibility(View.VISIBLE);
                                 break;
                             case 1:
                                 textAucunMedia.setText(R.string.aucune_video);
+                                listMedias.setVisibility(View.GONE);
+                                textAucunMedia.setVisibility(View.VISIBLE);
                                 break;
                             case 2:
                                 textAucunMedia.setText(R.string.aucun_audio);
+                                listMedias.setVisibility(View.GONE);
+                                textAucunMedia.setVisibility(View.VISIBLE);
                                 break;
                         }
                         listMedias.setVisibility(View.GONE);
