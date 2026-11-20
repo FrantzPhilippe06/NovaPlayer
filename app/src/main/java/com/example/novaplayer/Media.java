@@ -15,4 +15,19 @@ public class Media {
         this.video = video;
     }
 
+    public String getTitre() {
+        return titre;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
 }
