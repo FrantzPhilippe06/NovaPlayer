@@ -5,7 +5,7 @@ import android.widget.VideoView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Button;
-
+import android.widget.MediaController;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 

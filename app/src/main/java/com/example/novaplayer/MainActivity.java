@@ -1,9 +1,15 @@
 package com.example.novaplayer;
 
+import android.Manifest;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +28,19 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final ActivityResultLauncher<String[]>
+        demandePermissions = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+            resultat -> {
+                Boolean autorise = null;
+                for (String permission : resultat.keySet()) {
+                    autorise = resultat.get(permission);
+
+                    Log.d("Novaplayer", permission + " : " + autorise);
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
          // Association de l'adaptateur au RecyclerView
         listMedias.setAdapter(adaptateur);
-
+        textAucunMedia.setText(R.string.aucun_recent);
+        textAucunMedia.setVisibility(View.VISIBLE);
+        listMedias.setVisibility(View.GONE);
 
         // Ajoute les trois onglets à l'écran
         TabLayout barreOnglets = findViewById(R.id.barre_onglets);
@@ -76,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (position) {
                             case 0:
-                                ;
+                                textAucunMedia.setText(R.string.aucun_recent);
                                 listMedias.setVisibility(View.GONE);
                                 textAucunMedia.setVisibility(View.VISIBLE);
                                 break;
@@ -119,6 +140,23 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+    /*
+        Intent intent = new Intent(
+                MainActivity.this,
+                LecteurVideoActivity.class
+               // LecteurAudioActivity.class
+        );
+
+        startActivity(intent);
+    */
+        demandePermissions();
+    }
+
+    private void demandePermissions(){
+        demandePermissions.launch( new String[]{
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.READ_MEDIA_AUDIO
         });
     }
 }

@@ -19,7 +19,7 @@
     <VideoView
         android:id="@+id/vue_video"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="240dp"
         android:background="#000000" />
 
     <TextView
