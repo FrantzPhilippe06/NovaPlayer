@@ -32,6 +32,8 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
     private final List<Media> videos = new ArrayList<>();
+    private final List<Media> audios = new ArrayList<>();
+    private final List<Media> mediasAffiches = new ArrayList<>();
     private MediaAdapter adaptateur;
     private RecyclerView listMedias;
     private TextView textAucunMedia;
@@ -68,18 +70,10 @@ public class MainActivity extends AppCompatActivity {
         textAucunMedia = findViewById(R.id.texte_aucun_media);
         listMedias = findViewById(R.id.liste_medias);
 
-        /**
-         * Liste temporaire de vidéos pour tester l'interface.
-         *
-         List<String> videos = Arrays.asList(
-         "Vacances.mp4",
-         "Présentation.mp4",
-         "Tutoriel.mp4"
-         );
-         */
+
 
         // Création de l'adaptateur
-        adaptateur = new MediaAdapter(videos);
+        adaptateur = new MediaAdapter(mediasAffiches);
 
         // Organisation verticale de la liste
         listMedias.setLayoutManager(
@@ -130,8 +124,14 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case 2:
                                 textAucunMedia.setText(R.string.aucun_audio);
-                                listMedias.setVisibility(View.GONE);
-                                textAucunMedia.setVisibility(View.VISIBLE);
+
+                                if (accesAudiosAutorise()) {
+                                    chargerAudios();
+                                } else {
+                                    textAucunMedia.setVisibility(View.GONE);
+                                    listMedias.setVisibility(View.VISIBLE);
+                                    demandePermissions();
+                                }
                                 break;
                         }
                     }
@@ -190,6 +190,9 @@ public class MainActivity extends AppCompatActivity {
         videos.clear();
         videos.addAll(videosTrouvees);
 
+        mediasAffiches.clear();
+        mediasAffiches.addAll(videos);
+
         adaptateur.notifyDataSetChanged();
 
         if (videos.isEmpty()) {
@@ -201,6 +204,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void chargerAudios(){
+        MediaStoreRepository repository =
+                new MediaStoreRepository(this);
+
+        List<Media> audioTrouvees = repository.obtenirAudios();
+
+        audios.clear();;
+        audios.addAll(audioTrouvees);
+
+        mediasAffiches.clear();
+        mediasAffiches.addAll(audios);
+
+        adaptateur.notifyDataSetChanged();
+
+        if (audios.isEmpty()){
+            listMedias.setVisibility(View.GONE);
+            textAucunMedia.setVisibility(View.VISIBLE);
+        } else {
+            listMedias.setVisibility(View.VISIBLE);
+            textAucunMedia.setVisibility(View.GONE);
+        }
+
+    }
+
     private boolean accesVideosAutorise(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED)
             return true;
@@ -208,4 +235,10 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private boolean accesAudiosAutorise(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED)
+            return true;
+
+        return false;
+    }
 }
