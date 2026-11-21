@@ -17,7 +17,7 @@ public class MediaStoreRepository {
         resolver = context.getContentResolver();
     }
 
-    public List<Media> obtenirVideo(){
+    public List<Media> obtenirVideos(){
         List<Media> videos = new ArrayList<>();
 
         Uri uriVideo = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
@@ -34,6 +34,10 @@ public class MediaStoreRepository {
                 null,
                 null
         );
+
+        if (curseur == null) {
+            return videos;
+        }
 
         try{
             int colonneId = curseur.getColumnIndexOrThrow(

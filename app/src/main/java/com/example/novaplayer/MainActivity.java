@@ -2,6 +2,7 @@ package com.example.novaplayer;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +11,11 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,16 +31,29 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
+    private final List<Media> videos = new ArrayList<>();
+    private MediaAdapter adaptateur;
+    private RecyclerView listMedias;
+    private TextView textAucunMedia;
+
 
     private final ActivityResultLauncher<String[]>
-        demandePermissions = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(),
+            demandePermissions = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
             resultat -> {
                 Boolean autorise = null;
                 for (String permission : resultat.keySet()) {
                     autorise = resultat.get(permission);
 
                     Log.d("Novaplayer", permission + " : " + autorise);
+                }
+
+                if (accesVideosAutorise()) {
+                    TabLayout onglets = findViewById(R.id.barre_onglets);
+
+                    if (onglets.getSelectedTabPosition() == 1) {
+                        chargerVideos();
+                    }
                 }
             }
     );
@@ -49,28 +65,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //recuperation des ids
-        TextView textAucunMedia = findViewById(R.id.texte_aucun_media);
-        RecyclerView listMedias = findViewById(R.id.liste_medias);
-
+        textAucunMedia = findViewById(R.id.texte_aucun_media);
+        listMedias = findViewById(R.id.liste_medias);
 
         /**
          * Liste temporaire de vidéos pour tester l'interface.
+         *
+         List<String> videos = Arrays.asList(
+         "Vacances.mp4",
+         "Présentation.mp4",
+         "Tutoriel.mp4"
+         );
          */
-        List<String> videos = Arrays.asList(
-                "Vacances.mp4",
-                "Présentation.mp4",
-                "Tutoriel.mp4"
-        );
 
         // Création de l'adaptateur
-        MediaAdapter adaptateur = new MediaAdapter(videos);
+        adaptateur = new MediaAdapter(videos);
 
         // Organisation verticale de la liste
         listMedias.setLayoutManager(
                 new LinearLayoutManager(this)
         );
 
-         // Association de l'adaptateur au RecyclerView
+        // Association de l'adaptateur au RecyclerView
         listMedias.setAdapter(adaptateur);
         textAucunMedia.setText(R.string.aucun_recent);
         textAucunMedia.setVisibility(View.VISIBLE);
@@ -103,8 +119,14 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case 1:
                                 textAucunMedia.setText(R.string.aucune_video);
-                                listMedias.setVisibility(View.GONE);
-                                textAucunMedia.setVisibility(View.VISIBLE);
+
+                                if (accesVideosAutorise()) {
+                                    chargerVideos();
+                                } else {
+                                    textAucunMedia.setVisibility(View.GONE);
+                                    listMedias.setVisibility(View.VISIBLE);
+                                    demandePermissions();
+                                }
                                 break;
                             case 2:
                                 textAucunMedia.setText(R.string.aucun_audio);
@@ -112,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
                                 textAucunMedia.setVisibility(View.VISIBLE);
                                 break;
                         }
-                        listMedias.setVisibility(View.GONE);
-                        textAucunMedia.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -153,10 +173,39 @@ public class MainActivity extends AppCompatActivity {
         demandePermissions();
     }
 
-    private void demandePermissions(){
-        demandePermissions.launch( new String[]{
+    private void demandePermissions() {
+        demandePermissions.launch(new String[]{
                 Manifest.permission.READ_MEDIA_VIDEO,
                 Manifest.permission.READ_MEDIA_AUDIO
         });
     }
+
+    private void chargerVideos() {
+
+        MediaStoreRepository repository =
+                new MediaStoreRepository(this);
+
+        List<Media> videosTrouvees = repository.obtenirVideos();
+
+        videos.clear();
+        videos.addAll(videosTrouvees);
+
+        adaptateur.notifyDataSetChanged();
+
+        if (videos.isEmpty()) {
+            listMedias.setVisibility(View.GONE);
+            textAucunMedia.setVisibility(View.VISIBLE);
+        } else {
+            listMedias.setVisibility(View.VISIBLE);
+            textAucunMedia.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean accesVideosAutorise(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED)
+            return true;
+
+        return false;
+    }
+
 }

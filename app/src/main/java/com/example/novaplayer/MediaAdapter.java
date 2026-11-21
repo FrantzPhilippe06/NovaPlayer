@@ -11,9 +11,9 @@ import java.util.List;
 public class MediaAdapter
         extends RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
 
-    private final List<String> medias;
+    private final List<Media> medias;
 
-    public MediaAdapter(List<String> medias) {
+    public MediaAdapter(List<Media> medias) {
         this.medias = medias;
     }
 
@@ -32,8 +32,10 @@ public class MediaAdapter
     public void onBindViewHolder(
             @NonNull MediaViewHolder holder, int position) {
 
-        holder.titre.setText(medias.get(position));
-        holder.details.setText("Vidéo");
+        Media media = medias.get(position);
+
+        holder.titre.setText(media.getTitre());
+        holder.details.setText(media.getDetail());
     }
 
     @Override
@@ -43,8 +45,8 @@ public class MediaAdapter
 
     public static class MediaViewHolder
             extends RecyclerView.ViewHolder {
-        TextView titre;
-        TextView details;
+        private final TextView titre;
+        private final TextView details;
 
         public MediaViewHolder(@NonNull View itemView) {
             super(itemView);
